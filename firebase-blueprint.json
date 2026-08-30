@@ -1,0 +1,82 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Authenticated user security analyst profile",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "number" },
+        "lastLoginAt": { "type": "number" },
+        "role": { "type": "string" },
+        "securityScore": { "type": "number" },
+        "mfaEnabled": { "type": "boolean" }
+      },
+      "required": ["uid", "email", "displayName", "createdAt", "lastLoginAt"]
+    },
+    "UserSecurityChat": {
+      "title": "User Security Chat Message",
+      "description": "Chat messages, security questions and Gemini AI responses",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "sender": { "type": "string" },
+        "content": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "tags": { "type": "array", "items": { "type": "string" } },
+        "suggestedFollowups": { "type": "array", "items": { "type": "string" } },
+        "isSecurityWarning": { "type": "boolean" }
+      },
+      "required": ["id", "userId", "sender", "content", "timestamp"]
+    },
+    "UserAnalysis": {
+      "title": "User Security Analysis",
+      "description": "Security analysis results, threat history, indicators, and defensive playbooks",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "category": { "type": "string" },
+        "rawInput": { "type": "string" },
+        "riskLevel": { "type": "string" },
+        "threatType": { "type": "string" },
+        "summary": { "type": "string" },
+        "explanation": { "type": "string" },
+        "warningSigns": { "type": "array", "items": { "type": "string" } },
+        "defensiveActions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "action": { "type": "string" },
+              "completed": { "type": "boolean" }
+            }
+          }
+        },
+        "technicalIndicators": { "type": "array", "items": { "type": "string" } },
+        "mitreAttackTags": { "type": "array", "items": { "type": "string" } },
+        "timestamp": { "type": "number" },
+        "bookmarked": { "type": "boolean" }
+      },
+      "required": ["id", "userId", "category", "rawInput", "riskLevel", "threatType", "summary", "explanation", "timestamp"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile document. Only the authenticated user matching userId can read or write."
+    },
+    "/users/{userId}/chats/{chatId}": {
+      "schema": "UserSecurityChat",
+      "description": "Security questions and Gemini responses for the user. Only the authenticated user matching userId can read or write."
+    },
+    "/users/{userId}/analyses/{analysisId}": {
+      "schema": "UserAnalysis",
+      "description": "Security analysis results and threat history for the user. Only the authenticated user matching userId can read or write."
+    }
+  }
+}
